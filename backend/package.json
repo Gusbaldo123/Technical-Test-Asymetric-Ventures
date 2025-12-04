@@ -2,9 +2,13 @@
   "name": "backend",
   "version": "1.0.0",
   "description": "Backend Asymetric Technical Test",
-  "main": "src/index.js",
+  "main": "dist/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "ts-node-dev src/index.ts",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev"
   },
   "author": "Gusbaldo123",
   "license": "ISC",
@@ -16,8 +20,11 @@
     "pg": "^8.16.3"
   },
   "devDependencies": {
+    "@types/express": "^5.0.0",
     "@types/node": "^24.10.1",
     "@types/pg": "^8.15.6",
-    "prisma": "^7.1.0"
+    "prisma": "^7.1.0",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.9.3"
   }
 }
