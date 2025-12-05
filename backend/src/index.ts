@@ -1,7 +1,8 @@
 import express, { Application, Request, Response } from 'express';
 import dotenv from 'dotenv';
-import { authorService } from './models/AuthorService';
 import { Author } from './generated/prisma/client';
+
+import { authorService } from './services/AuthorService';
 
 dotenv.config();
 
