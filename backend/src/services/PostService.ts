@@ -1,5 +1,5 @@
 import { Post } from "../generated/prisma/client"
-import { Prisma } from "./Prisma";
+import { Prisma } from "../managers/Prisma";
 import { Crud } from "../models/Crud";
 
 class PostService extends Crud<Post> {
@@ -42,6 +42,4 @@ class PostService extends Crud<Post> {
     }
 }
 
-const postService = new PostService();
-
-export { postService };
+export { PostService };

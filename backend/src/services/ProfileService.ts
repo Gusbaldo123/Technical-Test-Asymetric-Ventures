@@ -1,5 +1,5 @@
 import { Profile } from "../generated/prisma/client"
-import { Prisma } from "./Prisma";
+import { Prisma } from "../managers/Prisma";
 import { Author } from "../generated/prisma/client";
 import { Crud } from "../models/Crud";
 
@@ -43,6 +43,4 @@ class ProfileService extends Crud<Profile> {
     }
 }
 
-const profileService = new ProfileService();
-
-export { profileService };
+export { ProfileService };

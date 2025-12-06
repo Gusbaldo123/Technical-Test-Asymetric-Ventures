@@ -1,5 +1,5 @@
 import { Author } from "../generated/prisma/client"
-import { Prisma } from "./Prisma";
+import { Prisma } from "../managers/Prisma";
 import { Crud } from "../models/Crud";
 
 class AuthorService extends Crud<Author> {
@@ -37,4 +37,4 @@ class AuthorService extends Crud<Author> {
 
 const authorService = new AuthorService();
 
-export { authorService };
+export { authorService, AuthorService };

@@ -1,5 +1,5 @@
 import { Category } from "../generated/prisma/client"
-import { Prisma } from "./Prisma";
+import { Prisma } from "../managers/Prisma";
 import { Crud } from "../models/Crud";
 
 class CategoryService extends Crud<Category> {
@@ -35,5 +35,4 @@ class CategoryService extends Crud<Category> {
     }
 }
 
-const categoryService = new CategoryService();
-export { categoryService };
+export { CategoryService };
