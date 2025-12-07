@@ -3,7 +3,7 @@ import { Prisma } from "../managers/Prisma";
 import { Author } from "../generated/prisma/client";
 import { Crud } from "../models/Crud";
 
-class ProfileService extends Crud<Profile> {
+class ProfileService extends Crud<Profile,Profile> {
     public override async create(profile: Profile): Promise<Profile> {
         let { bio, authorId } = profile;
         let createdProfile: Profile = await Prisma.profile.create({

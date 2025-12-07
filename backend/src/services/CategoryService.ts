@@ -2,7 +2,7 @@ import { Category } from "../generated/prisma/client"
 import { Prisma } from "../managers/Prisma";
 import { Crud } from "../models/Crud";
 
-class CategoryService extends Crud<Category> {
+class CategoryService extends Crud<Category,Category> {
     public override async create(category: Category): Promise<Category> {
         let { name } = category;
         let createdCategory: Category = await Prisma.category.create({

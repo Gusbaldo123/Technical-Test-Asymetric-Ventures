@@ -2,7 +2,7 @@ import { Post } from "../generated/prisma/client"
 import { Prisma } from "../managers/Prisma";
 import { Crud } from "../models/Crud";
 
-class PostService extends Crud<Post> {
+class PostService extends Crud<Post,Post> {
     public override async create(post: Post): Promise<Post> {
         let { createdAt, updatedAt, title, published, authorId } = post;
         let createdPost: Post = await Prisma.post.create({

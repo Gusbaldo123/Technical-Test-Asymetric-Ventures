@@ -1,7 +1,7 @@
 import { Router, Request, Response } from 'express';
 import { ICrud } from '../models/interfaces/ICrud';
 
-class RouterAPI<S extends ICrud<M>, M> {
+class RouterAPI<S extends ICrud<M,DTO>, M, DTO> {
     protected router = Router();
     protected service: S;
 
