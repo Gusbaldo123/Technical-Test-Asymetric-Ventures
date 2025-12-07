@@ -1,14 +1,25 @@
 import { Author } from "../generated/prisma/client"
 import { Prisma } from "../managers/Prisma";
 import { Crud } from "../models/Crud";
+import * as bcrypt from 'bcrypt';
 
 class AuthorService extends Crud<Author> {
-    public override async create(author: Author): Promise<Author> {
-        let { name, email, password } = author;
-        let createdAuthor: Author = await Prisma.author.create({
-            data: { name, email, password }
-        })
-        return createdAuthor;
+    public override async create(author: Author): Promise<Author|null> {
+        try {
+            let { name, email, password } = author;
+            let saltRounds: number = 10;
+
+            let hashPassword = await bcrypt.hash(password, saltRounds);
+
+            let createdAuthor: Author = await Prisma.author.create({
+                data: { name, email, password: hashPassword }
+            })
+            return createdAuthor;
+        } catch (error) {
+            console.log(error);
+            return null;
+        }
+        
     }
 
     public override async getById(id: number): Promise<Author | null> {
