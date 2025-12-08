@@ -1,11 +1,11 @@
 import { Author } from "../generated/prisma/client"
-import { CreateAuthorDTO, UpdateAuthorDTO, AuthorResponseDTO } from '../models/dtos';
+import { RegisterAuthorDTO, UpdateAuthorDTO, AuthorResponseDTO, LoginAuthorDTO } from '../models/dtos';
 import { Prisma } from "../managers/Prisma";
 import { Crud } from "../models/Crud";
 import * as bcrypt from 'bcrypt';
 
 class AuthorService extends Crud<Author, AuthorResponseDTO> {
-    public override async create(author: CreateAuthorDTO): Promise<AuthorResponseDTO | null> {
+    public override async create(author: RegisterAuthorDTO): Promise<AuthorResponseDTO | null> {
         try {
             let { name, email, password } = author;
             let saltRounds: number = 10;
@@ -20,7 +20,6 @@ class AuthorService extends Crud<Author, AuthorResponseDTO> {
             console.log(error);
             return null;
         }
-
     }
 
     public override async getById(id: number): Promise<AuthorResponseDTO | null> {
@@ -33,21 +32,53 @@ class AuthorService extends Crud<Author, AuthorResponseDTO> {
     }
 
     public override async updateById(id: number, author: UpdateAuthorDTO): Promise<AuthorResponseDTO | null> {
-        const { name, email, password } = author;
+        try {
+            let { name, email, password } = author;
+            let saltRounds: number = 10;
 
-        let updatedAuthor: Author = await Prisma.author.update({
-            where: { id },
-            data: { email, name, password }
-        });
-        if (updatedAuthor)
-            return AuthorResponseDTO.fromEntity(updatedAuthor);
-        return null;
+            let hashPassword = await bcrypt.hash(password, saltRounds);
+
+            let updatedAuthor: Author = await Prisma.author.update({
+                where: { id },
+                data: { email, name, password: hashPassword }
+            });
+            if (updatedAuthor)
+                return AuthorResponseDTO.fromEntity(updatedAuthor);
+            return null;
+        } catch (error) {
+            return null;
+        }
     }
 
-    public override async deleteById(id: number): Promise<void> {
-        await Prisma.author.delete({
-            where: { id }
-        });
+    public override async deleteById(id: number): Promise<boolean> {
+        try {
+            await Prisma.author.delete({
+                where: { id }
+            });
+            return true;
+        } catch (error) {
+            return false;
+        }
+    }
+
+    public async login(author: LoginAuthorDTO): Promise<AuthorResponseDTO | null> {
+        try {
+            let { email, password } = author;
+
+            const authorWithEmail: Author | null = await Prisma.author.findUnique({
+                where: { email: email.toLocaleLowerCase().trim() }
+            });
+
+            if (!authorWithEmail) return null;
+
+            const match: boolean = await bcrypt.compare(password, authorWithEmail.password);
+            if (!match) return null;
+
+            return AuthorResponseDTO.fromEntity(authorWithEmail);
+        } catch (error) {
+            console.log(error);
+            return null;
+        }
     }
 }
 
