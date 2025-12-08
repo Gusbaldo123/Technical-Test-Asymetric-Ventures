@@ -2,7 +2,7 @@ import { Post } from "../generated/prisma/client"
 import { Prisma } from "../managers/Prisma";
 import { Crud } from "../models/Crud";
 
-class PostService extends Crud<Post,Post> {
+class PostService extends Crud<Post, Post> {
     public override async create(post: Post): Promise<Post> {
         let { createdAt, updatedAt, title, published, authorId } = post;
         let createdPost: Post = await Prisma.post.create({
@@ -35,10 +35,15 @@ class PostService extends Crud<Post,Post> {
         return updatedPost;
     }
 
-    async deleteById(id: number): Promise<void> {
-        await Prisma.post.delete({
-            where: { id }
-        });
+    async deleteById(id: number): Promise<boolean> {
+        try {
+            await Prisma.post.delete({
+                where: { id }
+            });
+            return true;
+        } catch (error) {
+            return false;
+        }
     }
 }
 

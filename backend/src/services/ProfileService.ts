@@ -3,7 +3,7 @@ import { Prisma } from "../managers/Prisma";
 import { Author } from "../generated/prisma/client";
 import { Crud } from "../models/Crud";
 
-class ProfileService extends Crud<Profile,Profile> {
+class ProfileService extends Crud<Profile, Profile> {
     public override async create(profile: Profile): Promise<Profile> {
         let { bio, authorId } = profile;
         let createdProfile: Profile = await Prisma.profile.create({
@@ -21,7 +21,7 @@ class ProfileService extends Crud<Profile,Profile> {
 
     async getAuthor(authorId: number): Promise<Author | null> {
         let foundAuthor: Author | null = await Prisma.author.findFirst({
-            where:{ id:authorId }
+            where: { id: authorId }
         });
         return foundAuthor;
     }
@@ -36,10 +36,15 @@ class ProfileService extends Crud<Profile,Profile> {
         return updatedProfile;
     }
 
-    public override async deleteById(id: number): Promise<void> {
-        await Prisma.profile.delete({
-            where: { id }
-        });
+    public override async deleteById(id: number): Promise<boolean> {
+        try {
+            await Prisma.profile.delete({
+                where: { id }
+            });
+            return true;
+        } catch (error) {
+            return false;
+        }
     }
 }
 

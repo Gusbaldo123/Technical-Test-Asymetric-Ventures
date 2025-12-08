@@ -2,7 +2,7 @@ import { Category } from "../generated/prisma/client"
 import { Prisma } from "../managers/Prisma";
 import { Crud } from "../models/Crud";
 
-class CategoryService extends Crud<Category,Category> {
+class CategoryService extends Crud<Category, Category> {
     public override async create(category: Category): Promise<Category> {
         let { name } = category;
         let createdCategory: Category = await Prisma.category.create({
@@ -28,10 +28,15 @@ class CategoryService extends Crud<Category,Category> {
         return updatedCategory;
     }
 
-    public override async deleteById(id: number): Promise<void> {
-        await Prisma.category.delete({
-            where: { id }
-        });
+    public override async deleteById(id: number): Promise<boolean> {
+        try {
+            await Prisma.category.delete({
+                where: { id }
+            });
+            return true;
+        } catch (error) {
+            return false;
+        }
     }
 }
 
