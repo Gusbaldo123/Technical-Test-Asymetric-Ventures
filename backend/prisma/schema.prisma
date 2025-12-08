@@ -18,6 +18,7 @@ model Author {
   email    String   @unique @db.VarChar(200)
   password String   @db.VarChar(64)
   name     String?  @db.VarChar(300)
+  role     String @default("SIMPLE")
   posts    Post[]
   profile  Profile?
 }
