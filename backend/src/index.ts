@@ -2,7 +2,6 @@ import express, { Application } from 'express';
 import { config } from './managers/DotEnvManager';
 
 import authorRouter from "./routes/AuthorRouter"
-import profileRouter from './routes/ProfileRouter';
 import postRouter from './routes/PostRouter';
 import categoryRouter from './routes/CategoryRouters';
 
@@ -11,7 +10,6 @@ const app: Application = express();
 app.use(express.json());
 
 app.use('/author', authorRouter);
-app.use('/profile', profileRouter);
 app.use('/post', postRouter);
 app.use('/category', categoryRouter);
 
