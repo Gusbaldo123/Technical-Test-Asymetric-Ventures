@@ -4,13 +4,14 @@ import { CategoryCreateDTO } from '../models/dtos';
 import { RouterAPI } from '../models/RouterAPI';
 import { Request, Response } from 'express';
 import { AuthorResponseDTO } from '../models/dtos';
+import { CategorySchema } from '../models/validator/CategorySchema';
 
 class CategoryRouter extends RouterAPI<CategoryService, Category, Category> {
     constructor() {
         super(new CategoryService());
         this.router.get('/:id', this.getById);
-        this.router.post('/', this.create);
-        this.router.put('/:id', this.updateById);
+        this.router.post('/', this.validate(CategorySchema), this.create);
+        this.router.put('/:id', this.validate(CategorySchema), this.updateById);
         this.router.delete('/:id', this.deleteById);
     }
 

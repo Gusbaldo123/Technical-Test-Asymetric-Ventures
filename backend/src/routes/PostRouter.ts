@@ -2,14 +2,15 @@ import { Request, Response, Router } from 'express';
 import { PostService } from '../services/PostService';
 import { RouterAPI } from '../models/RouterAPI';
 import { AuthorResponseDTO, PostCreateDTO, PostResponseDTO } from '../models/dtos';
+import { PostSchema } from '../models/validator/PostSchema';
 
 class PostRouter extends RouterAPI<PostService, PostCreateDTO, PostResponseDTO> {
     constructor() {
         super(new PostService());
         this.router = Router();
         this.router.get('/:id', this.getById);
-        this.router.post('/', this.create);
-        this.router.put('/:id', this.updateById);
+        this.router.post('/',this.validate(PostSchema), this.create);
+        this.router.put('/:id',this.validate(PostSchema), this.updateById);
         this.router.delete('/:id', this.deleteById)
     }
 

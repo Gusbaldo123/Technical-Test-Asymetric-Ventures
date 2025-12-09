@@ -5,18 +5,19 @@ import { AuthorService } from '../services/AuthorService';
 import { Author } from '../generated/prisma/client';
 import { AuthorResponseDTO, AuthorRegisterDTO, AuthorLoginDTO } from '../models/dtos';
 import { authSigner } from '../managers/AuthManager';
+import { AuthorRegisterSchema,AuthorLoginSchema } from '../models/validator/AuthorSchema';
 
 class AuthorRouter extends RouterAPI<AuthorService, Author, AuthorResponseDTO> {
     constructor() {
         super(new AuthorService());
         this.router = Router();
         this.router.get('/:id', this.getById);
-        this.router.post('/register', this.create);
-        this.router.post('/', this.create);
-        this.router.put('/:id', this.updateById);
+        this.router.post('/register',this.validate(AuthorRegisterSchema), this.create);
+        this.router.post('/',this.validate(AuthorRegisterSchema), this.create);
+        this.router.put('/:id',this.validate(AuthorRegisterSchema), this.updateById);
         this.router.delete('/:id', this.deleteById);
         this.router.get('/:id/posts', this.getPostList);
-        this.router.post('/login', this.login);
+        this.router.post('/login',this.validate(AuthorLoginSchema), this.login);
     }
 
     public override create = async (req: Request, res: Response): Promise<Response> => {

@@ -1,7 +1,8 @@
-import { Router, Request, Response } from 'express';
+import { Router, Request, Response, NextFunction } from 'express';
 import { ICrud } from '../models/interfaces/ICrud';
 import { AuthorResponseDTO } from './dtos';
 import { decodeJwt, JwtPayload } from '../managers/AuthManager';
+import * as z from "zod";
 
 class RouterAPI<S extends ICrud<M, DTO>, M, DTO> {
     protected router = Router();
@@ -10,6 +11,23 @@ class RouterAPI<S extends ICrud<M, DTO>, M, DTO> {
     public constructor(service: S) {
         this.service = service;
     }
+    protected validate = (schema: z.ZodType) =>
+    (req: Request, res: Response, next: NextFunction) => {
+        const result = schema.safeParse(req.body);
+
+        if (!result.success) {
+            const { fieldErrors } = result.error.flatten();
+            return res.status(400).json({
+                message: "Validation error",
+                errors: fieldErrors
+            });
+        }
+
+        req.body = result.data; // já validado
+        next();
+    };
+
+
     protected checkAuthorToken = async (req: Request): Promise<AuthorResponseDTO | null> => {
         const authHeader = req.headers.authorization;
         if (!authHeader?.startsWith('Bearer ')) {
