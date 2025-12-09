@@ -11,10 +11,30 @@ class PostRouter extends RouterAPI<PostService, PostCreateDTO, PostResponseDTO> 
         this.router.get('/', this.getRecentPosts);
         this.router.get('/:id', this.getById);
         this.router.post('/',this.validate(PostSchema), this.create);
+        this.router.post('/generate', this.createWithAgent);
         this.router.put('/:id',this.validate(PostSchema), this.updateById);
         this.router.delete('/:id', this.deleteById)
     }
 
+    public createWithAgent = async (req: Request, res: Response): Promise<Response> => {
+        const requester: AuthorResponseDTO | null = await this.checkAuthorToken(req);
+        if (!requester) {
+            return res.status(401).json({ message: "Authorization token required" });
+        }
+
+        if (requester.role != "ADMINISTRATOR") {
+            return res.status(403).json({ message: "Unauthorized action" });
+        }
+        try {
+            const resPost = await this.service.createWithAgent();
+            if (!resPost)
+                return res.status(500).json({ message: "Error on generation" });
+
+            return res.status(201).json(resPost);
+        } catch (e) {
+            return res.status(500).json({ message: e });
+        }
+    }
     public override create = async (req: Request, res: Response): Promise<Response> => {
         const requester: AuthorResponseDTO | null = await this.checkAuthorToken(req);
         if (!requester) {

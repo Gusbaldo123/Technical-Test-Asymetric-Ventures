@@ -24,6 +24,8 @@ const generatePost = async (categories: Category[], atempt: number = 0): Promise
         const parsed = JSON.parse(response?.choices[0]?.message?.content || "");
         return { title: parsed.title, content: parsed.content, categoryIds: categories.map(cat => cat.id) } as PostCreateDTO;
     } catch (error) {
+        console.log(error);
+        
         return generatePost(categories, atempt + 1);
     }
 }
