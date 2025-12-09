@@ -1,8 +1,7 @@
 import { Author } from "../../../generated/prisma/client";
 
-export class RegisterAuthorDTO {
+export class AuthorLoginDTO {
     constructor(
-        public name: string | null,
         public email: string,
         public password: string
     ) {}
