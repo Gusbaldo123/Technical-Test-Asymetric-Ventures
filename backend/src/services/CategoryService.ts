@@ -39,6 +39,13 @@ class CategoryService extends Crud<Category, Category> {
             return false;
         }
     }
+
+    public async getRandomCategories(quantity: number): Promise<Category[] | null> {
+        const posts: Category[] | null = await Prisma.$queryRaw`SELECT * FROM public."Category" ORDER BY RANDOM() LIMIT ${quantity};`;
+        if (posts && posts.length > 0)
+            return posts;
+        return null;
+    }
 }
 
 export { CategoryService };

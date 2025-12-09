@@ -1,9 +1,12 @@
 import express, { Application, Request, Response, NextFunction } from 'express';
 import { config } from './managers/DotEnvManager';
+import JobManager from './managers/JobManager';
 
 import authorRouter from "./routes/AuthorRouter"
 import postRouter from './routes/PostRouter';
 import categoryRouter from './routes/CategoryRouter';
+
+JobManager.startAll();
 
 const app: Application = express();
 
@@ -17,9 +20,7 @@ app.use((error: any, req: Request, res: Response, next: NextFunction) => {
   }
   next();
 });
-
 app.use(express.json());
-
 app.use((error: any, req: Request, res: Response, next: NextFunction) => {
   if (error instanceof SyntaxError) {
     return res.status(400).json({
@@ -30,11 +31,9 @@ app.use((error: any, req: Request, res: Response, next: NextFunction) => {
   }
   next();
 });
-
 app.use('/author', authorRouter);
 app.use('/post', postRouter);
 app.use('/category', categoryRouter);
-
 app.use((error: any, req: Request, res: Response, next: NextFunction) => {
   console.error('Error:', error);
 
@@ -47,7 +46,11 @@ app.use((error: any, req: Request, res: Response, next: NextFunction) => {
     ...(process.env.NODE_ENV === 'development' && { stack: error.stack })
   });
 });
-
 app.listen(config.port, (): void => {
   console.log(`hosted on http://localhost:${config.port}`);
+});
+
+const cron = require('node-cron');
+cron.schedule('*/5 * * * *', async (meuJob: NextFunction) => {
+    
 });
