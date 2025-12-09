@@ -46,6 +46,8 @@ app.use((error: any, req: Request, res: Response, next: NextFunction) => {
     ...(process.env.NODE_ENV === 'development' && { stack: error.stack })
   });
 });
+
+app.get('/health', (_, res) => res.send("ok"));
 app.use((req, res, next) => {
   res.status(404).send('Sorry, the page you are looking for could not be found.');
 });
