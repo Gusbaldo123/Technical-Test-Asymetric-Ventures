@@ -8,6 +8,7 @@ class PostRouter extends RouterAPI<PostService, PostCreateDTO, PostResponseDTO> 
     constructor() {
         super(new PostService());
         this.router = Router();
+        this.router.get('/', this.getRecentPosts);
         this.router.get('/:id', this.getById);
         this.router.post('/',this.validate(PostSchema), this.create);
         this.router.put('/:id',this.validate(PostSchema), this.updateById);
@@ -79,6 +80,19 @@ class PostRouter extends RouterAPI<PostService, PostCreateDTO, PostResponseDTO> 
 
             return res.status(200).json({ message: `Id ${id} deleted` });
 
+        } catch (e) {
+            return res.status(500).json({ message: e });
+        }
+    }
+
+    public getRecentPosts = async(req:Request, res:Response): Promise<Response>=>{
+        try {
+            const size:number = Number(req.params.size||5);
+            let page:number = Number(req.params.page||0);
+            if(page<0)page=0;
+            const resPost = await this.service.getRecentPosts(page,size);
+            
+            return res.status(200).json(resPost);
         } catch (e) {
             return res.status(500).json({ message: e });
         }

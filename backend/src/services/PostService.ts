@@ -136,8 +136,12 @@ class PostService extends Crud<PostCreateDTO, PostResponseDTO> {
         }
     }
 
-    public async listByAuthor(authorId: number): Promise<PostResponseDTO[] | null> {
+    public async listByAuthor(authorId: number, page: number = 0, size: number = 5): Promise<PostResponseDTO[] | null> {
+        const skip = (page) * size;
         const foundPosts = await Prisma.post.findMany({
+            orderBy: { createdAt: 'desc' },
+            skip,
+            take: size,
             where: { authorId },
             include: {
                 postCategories: { include: { category: true } },
@@ -157,8 +161,34 @@ class PostService extends Crud<PostCreateDTO, PostResponseDTO> {
         const isOriginalPoster = await Prisma.post.findFirst({
             where: { id: postId, authorId }
         });
-        return isOriginalPoster!=null;
+        return isOriginalPoster != null;
     }
+
+    public async getRecentPosts(page: number = 1, size: number = 10): Promise<PostResponseDTO[] | null> {
+        const skip = (page) * size;
+
+        const posts = await Prisma.post.findMany({
+            orderBy: { createdAt: 'desc' },
+            skip,
+            take: size,
+            include: {
+                postCategories: { include: { category: true } },
+                author: true
+            }
+        });
+
+        if (!posts.length) return null;
+
+        return posts.map(p => {
+            const categories = p.postCategories.map(pc => pc.category);
+            return PostResponseDTO.fromEntity(
+                p,
+                AuthorResponseDTO.fromEntity(p.author),
+                categories
+            );
+        });
+    }
+
 }
 
 export { PostService };

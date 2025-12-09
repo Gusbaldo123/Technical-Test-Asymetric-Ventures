@@ -5,19 +5,19 @@ import { AuthorService } from '../services/AuthorService';
 import { Author } from '../generated/prisma/client';
 import { AuthorResponseDTO, AuthorRegisterDTO, AuthorLoginDTO } from '../models/dtos';
 import { authSigner } from '../managers/AuthManager';
-import { AuthorRegisterSchema,AuthorLoginSchema } from '../models/validator/AuthorSchema';
+import { AuthorRegisterSchema, AuthorLoginSchema } from '../models/validator/AuthorSchema';
 
 class AuthorRouter extends RouterAPI<AuthorService, Author, AuthorResponseDTO> {
     constructor() {
         super(new AuthorService());
         this.router = Router();
         this.router.get('/:id', this.getById);
-        this.router.post('/register',this.validate(AuthorRegisterSchema), this.create);
-        this.router.post('/',this.validate(AuthorRegisterSchema), this.create);
-        this.router.put('/:id',this.validate(AuthorRegisterSchema), this.updateById);
+        this.router.post('/register', this.validate(AuthorRegisterSchema), this.create);
+        this.router.post('/', this.validate(AuthorRegisterSchema), this.create);
+        this.router.put('/:id', this.validate(AuthorRegisterSchema), this.updateById);
         this.router.delete('/:id', this.deleteById);
         this.router.get('/:id/posts', this.getPostList);
-        this.router.post('/login',this.validate(AuthorLoginSchema), this.login);
+        this.router.post('/login', this.validate(AuthorLoginSchema), this.login);
     }
 
     public override create = async (req: Request, res: Response): Promise<Response> => {
@@ -33,7 +33,7 @@ class AuthorRouter extends RouterAPI<AuthorService, Author, AuthorResponseDTO> {
             return res.status(500).json({ message: e });
         }
     }
-    
+
     public override deleteById = async (req: Request, res: Response): Promise<Response> => {
         const id = Number(req.params.id);
         const requester: AuthorResponseDTO | null = await this.checkAuthorToken(req);
@@ -66,8 +66,8 @@ class AuthorRouter extends RouterAPI<AuthorService, Author, AuthorResponseDTO> {
             return res.status(401).json({ message: "Authorization token required" });
 
         if (id !== requester.id && requester.role !== "ADMINISTRATOR") {
-                return res.status(401).json({ message: "Unauthorized action" });
-            }
+            return res.status(401).json({ message: "Unauthorized action" });
+        }
 
         try {
             const body = req.body;
@@ -85,9 +85,13 @@ class AuthorRouter extends RouterAPI<AuthorService, Author, AuthorResponseDTO> {
     }
 
     public getPostList = async (req: Request, res: Response): Promise<Response> => {
+        const size: number = Number(req.params.size || 5);
+        let page: number = Number(req.params.page || 0);
+        if (page < 0) page = 0;
+
         const id: number = Number.parseInt(req.params.id);
         const postService = new PostService();
-        const postsFromAuthor = await postService.listByAuthor(id);
+        const postsFromAuthor = await postService.listByAuthor(id, size, page);
         return res.status(200).json(postsFromAuthor);
     }
 
