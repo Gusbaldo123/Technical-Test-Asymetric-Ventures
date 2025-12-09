@@ -1,11 +1,11 @@
 import { Author } from "../generated/prisma/client"
-import { RegisterAuthorDTO, UpdateAuthorDTO, AuthorResponseDTO, LoginAuthorDTO } from '../models/dtos';
+import { AuthorRegisterDTO, AuthorUpdateDTO, AuthorResponseDTO, AuthorLoginDTO } from '../models/dtos';
 import { Prisma } from "../managers/Prisma";
 import { Crud } from "../models/Crud";
 import * as bcrypt from 'bcrypt';
 
 class AuthorService extends Crud<Author, AuthorResponseDTO> {
-    public override async create(author: RegisterAuthorDTO): Promise<AuthorResponseDTO | null> {
+    public override async create(author: AuthorRegisterDTO): Promise<AuthorResponseDTO | null> {
         try {
             let { name, email, password } = author;
             let saltRounds: number = 10;
@@ -31,7 +31,7 @@ class AuthorService extends Crud<Author, AuthorResponseDTO> {
         return null;
     }
 
-    public override async updateById(id: number, author: UpdateAuthorDTO): Promise<AuthorResponseDTO | null> {
+    public override async updateById(id: number, author: AuthorUpdateDTO): Promise<AuthorResponseDTO | null> {
         try {
             let { name, email, password } = author;
             let saltRounds: number = 10;
@@ -61,7 +61,7 @@ class AuthorService extends Crud<Author, AuthorResponseDTO> {
         }
     }
 
-    public async login(author: LoginAuthorDTO): Promise<AuthorResponseDTO | null> {
+    public async login(author: AuthorLoginDTO): Promise<AuthorResponseDTO | null> {
         try {
             let { email, password } = author;
 

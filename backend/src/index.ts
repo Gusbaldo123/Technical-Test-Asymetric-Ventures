@@ -3,7 +3,7 @@ import { config } from './managers/DotEnvManager';
 
 import authorRouter from "./routes/AuthorRouter"
 import postRouter from './routes/PostRouter';
-import categoryRouter from './routes/CategoryRouters';
+import categoryRouter from './routes/CategoryRouter';
 
 const app: Application = express();
 

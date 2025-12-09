@@ -3,8 +3,8 @@ import { RouterAPI } from '../models/RouterAPI';
 import { PostService } from '../services/PostService';
 import { AuthorService } from '../services/AuthorService';
 import { Author } from '../generated/prisma/client';
-import { AuthorResponseDTO, RegisterAuthorDTO, LoginAuthorDTO } from '../models/dtos';
-import { authSigner, decodeJwt, JwtPayload } from '../managers/AuthManager';
+import { AuthorResponseDTO, AuthorRegisterDTO, AuthorLoginDTO } from '../models/dtos';
+import { authSigner } from '../managers/AuthManager';
 
 class AuthorRouter extends RouterAPI<AuthorService, Author, AuthorResponseDTO> {
     constructor() {
@@ -18,19 +18,9 @@ class AuthorRouter extends RouterAPI<AuthorService, Author, AuthorResponseDTO> {
         this.router.get('/:id/posts', this.getPostList);
         this.router.post('/login', this.login);
     }
-    private checkAuthorToken = async (req: Request): Promise<AuthorResponseDTO | null> => {
-        const authHeader = req.headers.authorization;
-        if (!authHeader?.startsWith('Bearer ')) {
-            return null;
-        }
-        const token = authHeader.substring(7);
-        const decoded: JwtPayload = await decodeJwt(token);
-        const author: AuthorResponseDTO = decoded.user;
-        return author;
-    }
 
     public override create = async (req: Request, res: Response): Promise<Response> => {
-        const reqPost: RegisterAuthorDTO = req.body;
+        const reqPost: AuthorRegisterDTO = req.body;
         try {
             const resPost = await this.service.create(reqPost);
             if (!resPost)
@@ -74,12 +64,12 @@ class AuthorRouter extends RouterAPI<AuthorService, Author, AuthorResponseDTO> {
         if (!requester)
             return res.status(401).json({ message: "Authorization token required" });
 
-        try {
-            if (id !== requester.id && requester.role !== "ADMINISTRATOR") {
+        if (id !== requester.id && requester.role !== "ADMINISTRATOR") {
                 return res.status(401).json({ message: "Unauthorized action" });
             }
-            const body = req.body;
 
+        try {
+            const body = req.body;
             const updated = await this.service.updateById(id, body);
 
             if (!updated) {
@@ -96,12 +86,12 @@ class AuthorRouter extends RouterAPI<AuthorService, Author, AuthorResponseDTO> {
     public getPostList = async (req: Request, res: Response): Promise<Response> => {
         const id: number = Number.parseInt(req.params.id);
         const postService = new PostService();
-        const postsFromAuthor = await postService.getByAuthorId(id);
+        const postsFromAuthor = await postService.listByAuthor(id);
         return res.status(200).json(postsFromAuthor);
     }
 
     public login = async (req: Request, res: Response): Promise<Response> => {
-        const reqPost: LoginAuthorDTO = req.body;
+        const reqPost: AuthorLoginDTO = req.body;
 
         const resPost = await this.service.login(reqPost);
         if (!resPost)

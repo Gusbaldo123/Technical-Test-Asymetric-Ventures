@@ -1,9 +1,10 @@
 import { Category } from "../generated/prisma/client"
 import { Prisma } from "../managers/Prisma";
 import { Crud } from "../models/Crud";
+import { CategoryCreateDTO } from "../models/dtos";
 
 class CategoryService extends Crud<Category, Category> {
-    public override async create(category: Category): Promise<Category> {
+    public override async create(category: CategoryCreateDTO): Promise<Category> {
         let { name } = category;
         let createdCategory: Category = await Prisma.category.create({
             data: { name }
@@ -18,7 +19,7 @@ class CategoryService extends Crud<Category, Category> {
         return foundCategory;
     }
 
-    public override async updateById(id: number, category: Category): Promise<Category> {
+    public override async updateById(id: number, category: CategoryCreateDTO): Promise<Category> {
         let { name } = category;
 
         let updatedCategory: Category = await Prisma.category.update({
