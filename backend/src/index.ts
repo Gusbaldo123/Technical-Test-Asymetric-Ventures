@@ -9,7 +9,9 @@ import categoryRouter from './routes/CategoryRouter';
 JobManager.startAll();
 
 const app: Application = express();
+const cors = require('cors');
 
+app.use(cors({ origin: '*' }));
 app.use((error: any, req: Request, res: Response, next: NextFunction) => {
   if (error instanceof SyntaxError && 'body' in error) {
     return res.status(400).json({
