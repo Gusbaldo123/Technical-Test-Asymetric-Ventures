@@ -14,12 +14,10 @@ const generatePost = async (categories: Category[], atempt:number=0): Promise<Po
     const context = categories.map(cat => cat.name).join(";");
     const response = await hf.chatCompletion({
         model: "meta-llama/Llama-3.1-8B-Instruct:nscale",
-        messages: [
-            {
+        messages: [ {
                 role: "user",
                 content: `${prompt}\n${context}`,
-            },
-        ],
+            },    ],
     });
 
     try {
