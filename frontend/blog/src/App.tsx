@@ -1,51 +1,30 @@
-import { useState, useEffect } from 'react'
-import PostComponent from './components/PostComponent';
-import type { Post } from './models/Post';
+import { Routes, Route } from "react-router-dom";
+import { AuthProvider } from "./context/AuthContext";
 
+import HomePage from "./pages/HomePage";
+import LoginPage from "./pages/LoginPage";
+import RegisterPage from "./pages/RegisterPage";
+import PostPage from "./pages/PostPage";
+import NewPostPage from "./pages/NewPostPage";
+import ProfilePage from "./pages/ProfilePage";
+import CategoryPage from "./pages/CategoryPage";
 
-function App() {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+import { PrivateRoute } from "./router/PrivateRoute";
 
-  useEffect(() => {
-    fetchPosts();
-  }, []);
-
-  async function fetchPosts() {
-    try {
-      setLoading(true);
-      const res = await fetch('http://localhost:3000/post?size=20&page=0', {
-        method: 'GET',
-        mode: 'cors',
-      });
-      
-      if (!res.ok) {
-        throw new Error(`HTTP error! status: ${res.status}`);
-      }
-      
-      const data = await res.json();
-      console.log('Posts recebidos:', data);
-      setPosts(data);
-      
-    } catch (error) {
-      console.error('Error fetching posts:', error);
-      setError(error instanceof Error ? error.message : 'Failed to fetch posts');
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  if (loading) return <div>Loading posts...</div>;
-  if (error) return <div>Error: {error}</div>;
-
+export default function App() {
   return (
-    <div>
-      {posts.map((post) => (
-        <PostComponent key={post.id} post={post} />
-      ))}
-    </div>
+    <AuthProvider>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/home" element={<HomePage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/profile/:authorId" element={<ProfilePage />} />
+        <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/categories" element={<PrivateRoute><CategoryPage /></PrivateRoute>} />
+        <Route path="/post" element={<PrivateRoute><NewPostPage /></PrivateRoute>} />
+        <Route path="/post/:postId" element={<PrivateRoute><PostPage /></PrivateRoute>} />
+      </Routes>
+    </AuthProvider>
   );
 }
-
-export default App;
