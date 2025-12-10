@@ -15,13 +15,15 @@ function HomePage() {
 
       const apiUrl = import.meta.env.VITE_API;
 
-      const url = `${apiUrl}/post?size=2&page=0`;
+      const url = `${apiUrl}/post`;
 
       const res = await fetch(url, {
         method: 'GET',
         mode: 'cors',
         headers: {
           'Content-Type': 'application/json',
+          "size":"20",
+          "page":"0"
         }
       });
 

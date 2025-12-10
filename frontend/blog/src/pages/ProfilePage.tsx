@@ -45,12 +45,12 @@ export default function ProfilePage() {
     }, [author, authorId]);
 
     async function fetchUserPosts(author: any) {
-        try {
+        try {            
             setLoading(true);
 
             const apiUrl = import.meta.env.VITE_API;
 
-            const id = authorId ? parseInt(authorId) : author.id;
+            const id = parseInt(author.id);
             const url = `${apiUrl}/author/${id}/posts/`;
 
             const res = await fetch(url, {
@@ -58,14 +58,16 @@ export default function ProfilePage() {
                 mode: 'cors',
                 headers: {
                     'Content-Type': 'application/json',
+                    "page": "0",
+                    "size": "20",
                 }
             });
 
             if (!res.ok) {
                 throw new Error(`HTTP error! status: ${res.status}`);
             }
-
             const data = await res.json();
+            
             setPosts(data);
             SetCanLoad(true);
 
@@ -79,7 +81,7 @@ export default function ProfilePage() {
     }
 
     if (!author)
-        return <div>Carregando usuário...</div>;
+        return <div>Loading User...</div>;
 
     if (loading)
         return <div>Loading...</div>;
@@ -115,7 +117,7 @@ export default function ProfilePage() {
                             <div>No posts yet</div>
                     ) :
                     (
-                        <button onClick={async () => { await fetchUserPosts(author); }}>Load user posts</button>
+                        <button onClick={async () => { await fetchUserPosts(targetAuthor); }}>Load user posts</button>
                     )
             }
         </>

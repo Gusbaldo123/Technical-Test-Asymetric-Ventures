@@ -19,11 +19,12 @@ export default function App() {
         <Route path="/home" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
-        <Route path="/profile/:authorId" element={<ProfilePage />} />
-        <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/profile/:authorId" element={<PrivateRoute><ProfilePage /></PrivateRoute>} />
+        <Route path="/profile" element={<PrivateRoute><ProfilePage /></PrivateRoute>} />
         <Route path="/categories" element={<PrivateRoute><CategoryPage /></PrivateRoute>} />
         <Route path="/post" element={<PrivateRoute><NewPostPage /></PrivateRoute>} />
         <Route path="/post/:postId" element={<PrivateRoute><PostPage /></PrivateRoute>} />
+
       </Routes>
     </AuthProvider>
   );
