@@ -107,8 +107,8 @@ class PostRouter extends RouterAPI<PostService, PostCreateDTO, PostResponseDTO> 
 
     public getRecentPosts = async(req:Request, res:Response): Promise<Response>=>{
         try {
-            const size:number = Number(req.params.size||5);
-            let page:number = Number(req.params.page||0);
+            const size:number = Number(req.headers.size||5);
+            let page:number = Number(req.headers.page||0);
             if(page<0)page=0;
             const resPost = await this.service.getRecentPosts(page,size);
             

@@ -46,6 +46,11 @@ class CategoryService extends Crud<Category, Category> {
             return posts;
         return null;
     }
+
+    public async listAll(): Promise<Category[]> {
+        const categories: Category[] = await Prisma.category.findMany();
+        return categories;
+    }
 }
 
 export { CategoryService };

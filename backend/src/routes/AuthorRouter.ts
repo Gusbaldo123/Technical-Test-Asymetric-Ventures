@@ -11,12 +11,12 @@ class AuthorRouter extends RouterAPI<AuthorService, Author, AuthorResponseDTO> {
     constructor() {
         super(new AuthorService());
         this.router = Router();
+        this.router.get('/:id/posts', this.getPostList);
         this.router.get('/:id', this.getById);
         this.router.post('/register', this.validate(AuthorRegisterSchema), this.create);
         this.router.post('/', this.validate(AuthorRegisterSchema), this.create);
         this.router.put('/:id', this.validate(AuthorRegisterSchema), this.updateById);
         this.router.delete('/:id', this.deleteById);
-        this.router.get('/:id/posts', this.getPostList);
         this.router.post('/login', this.validate(AuthorLoginSchema), this.login);
     }
 
@@ -84,14 +84,15 @@ class AuthorRouter extends RouterAPI<AuthorService, Author, AuthorResponseDTO> {
         }
     }
 
-    public getPostList = async (req: Request, res: Response): Promise<Response> => {
-        const size: number = Number(req.params.size || 5);
-        let page: number = Number(req.params.page || 0);
+    public getPostList = async (req: Request, res: Response): Promise<Response> => {        
+        const size: number = Number(req.headers.size||5);
+        let page: number = Number(req.headers.page||0);
         if (page < 0) page = 0;
 
         const id: number = Number.parseInt(req.params.id);
         const postService = new PostService();
-        const postsFromAuthor = await postService.listByAuthor(id, size, page);
+        
+        const postsFromAuthor = await postService.listByAuthor(id, page,size);
         return res.status(200).json(postsFromAuthor);
     }
 

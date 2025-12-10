@@ -9,10 +9,20 @@ import { CategorySchema } from '../models/validator/CategorySchema';
 class CategoryRouter extends RouterAPI<CategoryService, Category, Category> {
     constructor() {
         super(new CategoryService());
+        this.router.get('/', this.listAll);
         this.router.get('/:id', this.getById);
         this.router.post('/', this.validate(CategorySchema), this.create);
         this.router.put('/:id', this.validate(CategorySchema), this.updateById);
         this.router.delete('/:id', this.deleteById);
+    }
+
+    public listAll = async (req: Request, res: Response): Promise<Response> => {
+        try {
+            const categories = await this.service.listAll();
+            return res.status(200).json(categories);
+        } catch (e) {
+            return res.status(500).json({ message: e });
+        }
     }
 
     public override create = async (req: Request, res: Response): Promise<Response> => {

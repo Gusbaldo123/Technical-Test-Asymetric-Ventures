@@ -173,25 +173,39 @@ class PostService extends Crud<PostCreateDTO, PostResponseDTO> {
         }
     }
 
-    public async listByAuthor(authorId: number, page: number = 0, size: number = 5): Promise<PostResponseDTO[] | null> {
-        const skip = (page) * size;
+    public async listByAuthor(
+        authorId: number,
+        page: number,
+        size: number
+    ): Promise<PostResponseDTO[] | null> {
+        const skip = page * size;
+
+        console.log(skip, size, authorId, page);
+
         const foundPosts = await Prisma.post.findMany({
             orderBy: { createdAt: 'desc' },
+            where: { authorId },
             skip,
             take: size,
-            where: { authorId },
             include: {
-                postCategories: { include: { category: true } },
+                postCategories: {
+                    include: { category: true }
+                },
                 author: true
             }
         });
 
-        if (!foundPosts.length) return null;
+        if (foundPosts.length <= 0) return null;
 
-        return foundPosts.map(post => {
-            const categories = post.postCategories.map(pc => pc.category);
-            return PostResponseDTO.fromEntity(post, AuthorResponseDTO.fromEntity(post.author), categories);
-        });
+        const postDTOs = await Promise.all(
+            foundPosts.map(async post => {
+                const categories = post.postCategories.map(pc => pc.category);
+                const authorDTO = AuthorResponseDTO.fromEntity(post.author);
+                return PostResponseDTO.fromEntity(post, authorDTO, categories);
+            })
+        );
+
+        return postDTOs;
     }
 
     public async isAuthorOriginalPoster(authorId: number, postId: number): Promise<boolean> {
@@ -201,7 +215,7 @@ class PostService extends Crud<PostCreateDTO, PostResponseDTO> {
         return isOriginalPoster != null;
     }
 
-    public async getRecentPosts(page: number = 1, size: number = 10): Promise<PostResponseDTO[] | null> {
+    public async getRecentPosts(page: number, size: number): Promise<PostResponseDTO[] | null> {
         const skip = (page) * size;
 
         const posts = await Prisma.post.findMany({
@@ -214,7 +228,7 @@ class PostService extends Crud<PostCreateDTO, PostResponseDTO> {
             }
         });
 
-        if (!posts.length) return null;
+        if (posts.length <= 0) return null;
 
         return posts.map(p => {
             const categories = p.postCategories.map(pc => pc.category);
