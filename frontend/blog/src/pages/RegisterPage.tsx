@@ -27,9 +27,7 @@ export default function RegisterPage() {
 
       const res = await fetch(`${apiUrl}/author/register`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form)
       });
 
@@ -47,43 +45,64 @@ export default function RegisterPage() {
   }
 
   return (
-    <>
+    <div className="bg-gradient-to-b from-slate-100 to-slate-200 min-h-screen">
       <HeaderComponent />
 
-      <div style={{ display: "flex", flexDirection: "column", width: "300px" }}>
-        <label>Name:</label>
-        <input
-          type="text"
-          name="name"
-          placeholder="Your Name"
-          value={form.name}
-          onChange={onChange}
-        />
+      <div className="flex justify-center mt-16">
+        <div className="w-full max-w-md bg-white shadow rounded-xl p-8 space-y-6">
+          <h2 className="text-2xl font-bold text-center">Register</h2>
 
-        <label>Email:</label>
-        <input
-          type="email"
-          name="email"
-          placeholder="email@example.com"
-          value={form.email}
-          onChange={onChange}
-        />
+          <div className="space-y-4">
+            <div>
+              <label className="block font-medium mb-1">Name</label>
+              <input
+                type="text"
+                name="name"
+                placeholder="Your Name"
+                value={form.name}
+                onChange={onChange}
+                className="w-full border border-gray-300 rounded-lg p-3"
+              />
+            </div>
 
-        <label>Password:</label>
-        <input
-          type="password"
-          name="password"
-          placeholder="Strong Password"
-          value={form.password}
-          onChange={onChange}
-        />
+            <div>
+              <label className="block font-medium mb-1">Email</label>
+              <input
+                type="email"
+                name="email"
+                placeholder="email@example.com"
+                value={form.email}
+                onChange={onChange}
+                className="w-full border border-gray-300 rounded-lg p-3"
+              />
+            </div>
 
-        <button onClick={registerUser} disabled={loading}>
-          {loading ? "Sending..." : "Register"}
-        </button>
+            <div>
+              <label className="block font-medium mb-1">Password</label>
+              <input
+                type="password"
+                name="password"
+                placeholder="Strong Password"
+                value={form.password}
+                onChange={onChange}
+                className="w-full border border-gray-300 rounded-lg p-3"
+              />
+            </div>
+          </div>
 
-        {error && <p style={{ color: "red" }}>{error}</p>}
+          {error && (
+            <p className="text-red-600 text-center">{error}</p>
+          )}
+
+          <button
+            onClick={registerUser}
+            disabled={loading}
+            className="w-full py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:bg-indigo-400"
+          >
+            {loading ? "Sending..." : "Register"}
+          </button>
+        </div>
       </div>
-    </>
+    </div>
   );
 }
