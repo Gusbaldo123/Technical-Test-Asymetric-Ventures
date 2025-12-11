@@ -18,7 +18,7 @@ export default function ProfilePage() {
 
     useEffect(() => {
         if (!author) return;
-        const apiUrl = import.meta.env.VITE_API;
+        const apiUrl = import.meta.env.VITE_API || '/api';
         const id = authorId ? parseInt(authorId) : author.id;
         if (!id) return;
 
@@ -41,7 +41,7 @@ export default function ProfilePage() {
     async function fetchUserPosts(a: Author) {
         try {
             setLoading(true);
-            const apiUrl = import.meta.env.VITE_API;
+            const apiUrl = import.meta.env.VITE_API || '/api';
             const res = await fetch(`${apiUrl}/author/${a.id}/posts/`, {
                 method: "GET",
                 mode: "cors",
@@ -90,9 +90,9 @@ export default function ProfilePage() {
                 </div>
 
                 {canLoad ? (
-                    posts.length > 0 ? (
+                    posts?.length > 0 ? (
                         <div className="flex flex-col gap-4 mt-6">
-                            {posts.map((post) => (
+                            {posts?.map((post) => (
                                 <PostComponent key={post.id} post={post} />
                             ))}
                         </div>

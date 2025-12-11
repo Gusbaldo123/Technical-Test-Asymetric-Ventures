@@ -32,7 +32,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   // Login
   async function login(email: string, password: string): Promise<boolean> {
     try {
-      const apiUrl = import.meta.env.VITE_API;
+      const apiUrl = import.meta.env.VITE_API || '/api';
       const url = `${apiUrl}/author/login`;
 
       const response = await fetch(url, {

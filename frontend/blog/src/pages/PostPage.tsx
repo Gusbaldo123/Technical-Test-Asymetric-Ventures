@@ -27,7 +27,7 @@ export default function PostPage() {
 
   async function handleDelete() {
     if (!post) return;
-    const apiUrl = import.meta.env.VITE_API;
+    const apiUrl = import.meta.env.VITE_API || '/api';
     await fetch(`${apiUrl}/post/${post.id}`, {
       method: "DELETE",
       headers: {
@@ -39,7 +39,7 @@ export default function PostPage() {
 
   async function handleSave() {
     if (!post) return;
-    const apiUrl = import.meta.env.VITE_API;
+    const apiUrl = import.meta.env.VITE_API || '/api';
     await fetch(`${apiUrl}/post/${post.id}`, {
       method: "PUT",
       headers: {
@@ -68,7 +68,7 @@ export default function PostPage() {
     async function load() {
       try {
         setLoading(true);
-        const apiUrl = import.meta.env.VITE_API;
+        const apiUrl = import.meta.env.VITE_API || '/api';
 
         const p = await fetch(`${apiUrl}/post/${id}`);
         const pdata = await p.json();
@@ -80,7 +80,7 @@ export default function PostPage() {
         setTitle(pdata.title);
         setContent(pdata.content);
         setAllCategories(cdata);
-        setSelectedCategories(pdata.categories.map((c: Category) => c.id));
+        setSelectedCategories(pdata?.categories?.map((c: Category) => c.id));
       } finally {
         setLoading(false);
       }
@@ -105,7 +105,7 @@ export default function PostPage() {
             <p className="text-gray-800 whitespace-pre-line mb-4 ">{post.content}</p>
 
             <div className="flex flex-wrap gap-2 mb-6 justify-center">
-              {post.categories.map((cat) => (
+              {post?.categories?.map((cat) => (
                 <span
                   key={cat.id}
                   className="px-3 py-1 bg-indigo-100 text-indigo-700 rounded-lg text-sm"
@@ -151,7 +151,7 @@ export default function PostPage() {
             <h4 className="text-lg font-semibold">Categories</h4>
 
             <div className="flex flex-col gap-2">
-              {allCategories.map((cat) => (
+              {allCategories?.map((cat) => (
                 <label key={cat.id} className="flex items-center gap-2">
                   <input
                     type="checkbox"

@@ -23,7 +23,7 @@ export default function RegisterPage() {
       setLoading(true);
       setError(null);
 
-      const apiUrl = import.meta.env.VITE_API;
+      const apiUrl = import.meta.env.VITE_API || '/api';
 
       const res = await fetch(`${apiUrl}/author/register`, {
         method: "POST",

@@ -17,7 +17,7 @@ function EditForm({ targetAuthor }: { targetAuthor: Author }) {
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
 
-  const apiUrl = import.meta.env.VITE_API;
+  const apiUrl = import.meta.env.VITE_API || '/api';
 
   function onChange(e: React.ChangeEvent<HTMLInputElement>) {
     setForm({ ...form, [e.target.name]: e.target.value });

@@ -27,7 +27,7 @@ function postComponent({ post }: { post: Post }) {
       </p>
 
       <div className="flex gap-2 flex-wrap">
-        {post.categories.map(cat => (
+        {post.categories?.map(cat => (
           <span
             key={cat.id}
             className="text-xs bg-indigo-100 text-indigo-700 px-2 py-1 rounded-md"

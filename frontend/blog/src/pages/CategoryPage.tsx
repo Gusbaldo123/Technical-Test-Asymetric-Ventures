@@ -19,7 +19,7 @@ export default function CategoryPage() {
   const [editId, setEditId] = useState<number | null>(null);
   const [editName, setEditName] = useState("");
 
-  const api = import.meta.env.VITE_API;
+  const api = import.meta.env.VITE_API || '/api';
   const token = author?.session?.replaceAll('"', "");
 
   useEffect(() => {
@@ -106,7 +106,7 @@ export default function CategoryPage() {
           </div>
 
           <div className="flex flex-col gap-3">
-            {categories.map((cat) => (
+            {categories?.map((cat) => (
               <div
                 key={cat.id}
                 className="flex items-center justify-between bg-slate-100 p-3 rounded-lg"

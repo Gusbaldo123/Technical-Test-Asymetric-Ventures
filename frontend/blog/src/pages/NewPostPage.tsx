@@ -12,7 +12,7 @@ export default function NewPostPage() {
   const [content, setContent] = useState("")
   const [categories, setCategories] = useState<Category[]>([])
   const [selectedCategories, setSelectedCategories] = useState<Category[]>([])
-  const api = import.meta.env.VITE_API
+  const api = import.meta.env.VITE_API || '/api'
   const token = author?.session?.replaceAll('"', '')
   const navigate = useNavigate()
 
@@ -71,7 +71,7 @@ export default function NewPostPage() {
     const post = {
       title: title.trim(),
       content: content.trim(),
-      categoryIds: selectedCategories.map(c => c.id),
+      categoryIds: selectedCategories?.map(c => c.id),
     }
 
     const res = await fetch(`${api}/post`, {
@@ -120,7 +120,7 @@ export default function NewPostPage() {
           className="w-full border border-gray-300 rounded-lg p-2"
         >
           <option value="">-</option>
-          {categories.map(cat => (
+          {categories?.map(cat => (
             <option key={cat.id} value={cat.id}>{cat.name}</option>
           ))}
         </select>
@@ -129,12 +129,12 @@ export default function NewPostPage() {
       <div>
         <h3 className="text-lg font-semibold mb-2">Selected Categories</h3>
 
-        {selectedCategories.length === 0 && (
+        {selectedCategories?.length === 0 && (
           <span className="text-gray-500">No category selected</span>
         )}
 
         <div className="flex flex-wrap gap-2 mt-2">
-          {selectedCategories.map(cat => (
+          {selectedCategories?.map(cat => (
             <button
               key={cat.id}
               onClick={() => removeSelected(cat)}

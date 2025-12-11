@@ -12,7 +12,7 @@ function HomePage() {
   async function fetchPosts() {
     try {
       setLoading(true);
-      const apiUrl = import.meta.env.VITE_API;
+      const apiUrl = import.meta.env.VITE_API || '/api';
       const res = await fetch(`${apiUrl}/post`, {
         method: "GET",
         mode: "cors",
@@ -50,7 +50,7 @@ function HomePage() {
       <HeaderComponent />
 
       <main className="p-4 md:px-24 pt-6">
-        {posts.map((post) => (
+        {posts?.map((post) => (
           <PostComponent key={post.id} post={post} />
         ))}
       </main>
